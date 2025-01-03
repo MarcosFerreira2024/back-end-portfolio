@@ -1,12 +1,17 @@
 import express from "express";
 import dotenv from "dotenv";
 import rout from "./routes/routes";
-import { HTTP_STATUS } from "./services/httpStatus";
+import { HTTP_STATUS } from "./consts/httpStatus";
+import cors from "cors";
+
+
 
 dotenv.config();
 const porta = process.env.PORTA || 3000; 
 
 const server = express();
+
+server.use(cors({ origin: "*"}))
 
 server.use(express.json());
 
