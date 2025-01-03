@@ -3,66 +3,95 @@ import prisma from "../libs/prisma";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import * as JWT from "jsonwebtoken";
-import { findUniqueService } from "../services/modelFindService";
-import { handleUpdateModel, handleVerifyUser } from "../services/handleModelsRequests";
-import { deleteService } from "../services/modelDeleteService";
+import { findUniqueService } from "./findModel";
+import { deleteService } from "./deleteModel";
+import { updateService } from "./updateModel";
 
 dotenv.config();
 
 export const registerModel = async (data: Prisma.UserCreateInput) => {
   try {
     const user = await prisma.user.create({ data });
-    return user;
-  } catch (e) {
-    return null
+    if(!user){
+      throw new Error ("Dados inválidos")
+    }
+    return user
+
+  } 
+  catch (error) 
+  {
+    if (error instanceof Error && error.message.includes("email")) {
+      return new Error("Email já cadastrado");
+    }
   }
+
 };
 
 export const loginModel = async (email: string, senha: string) => {
   try {
-    
-    const user = await findUniqueService({
+    const findedUser = await findUniqueService({
       find:"email",
+
       value:email,
+
       data:{
         id:true,
+
         email:true,
+
         password:true
       },
+
       model:prisma.user
       
     });
-    (user)
-    if (user) {
 
-      const validaSenha = await bcrypt.compare(senha, user.password);
-      if (validaSenha) {
-
-        const token = JWT.sign(
-          { id: user.id, email: user.email },
-          process.env.MY_SECRET_KEY as string
-        );
-
-        return {
-          message: "Usuario logado",
-          token,
-        };
-      }
+    if(findedUser instanceof Error) {
+       throw new Error (findedUser.message)
 
     }
-    throw new Error();
 
-  } 
+    const validaSenha = await bcrypt.compare(senha, findedUser.password);
+
+    if (validaSenha) {
+
+      const token = JWT.sign(
+        { id: findedUser.id, email: findedUser.email },
+        process.env.MY_SECRET_KEY as string
+      );
+
+      return {
+        message: "Usuario logado",
+        token,
+      };
+    }
+
+     throw new Error("Senha Incorreta") 
+
+  }
   catch (e)
    {
-    ("Erro")
+    return e
   }
 
 };
 
 export const getUserInfoModel = async (token: string,password:string) => {
 
-  return handleVerifyUser(token,password)
+  try {
+    const verifiedUser = await VerifyUser(token,password)
+
+    if (verifiedUser instanceof Error){
+       throw new Error (verifiedUser.message)
+
+    }
+    return verifiedUser
+      
+  }
+  catch(e){
+    return e
+
+  }
 };
 
 export const getAllUsersModel = async () => {
@@ -71,47 +100,131 @@ export const getAllUsersModel = async () => {
 
       select: {
         name: true,
+
         id: true,
+
         createdAt: true,
+
         role: true,
+
         updatedAt: true,
 
       },
       
     });
+    if (!users){
+       throw new Error ("Nenhum usuário encontrado")
+
+    }
     return users;
-  } catch {
-    return null;
+
+  } 
+  catch (e){
+    return e ;
+
   }
 };
 
 
 
 export const updateUserModel = async (token:string,data:Prisma.UserUpdateInput) =>{
-    const user = await handleVerifyUser(token,data.password as string)
+  try {
+    const user = await VerifyUser(token,data.password as string)
 
     const {password,role,...newData} = data
-  if (user){
-    const updatedUser = await handleUpdateModel({id:user.id,model:prisma.user,validateData:newData })
-    const token = JWT.sign(
+
+  if (user instanceof Error){
+       throw new Error (user.message)
+
+    }
+    const updatedUser = await updateService({find:"id",model:prisma.user,value:user.id,data:newData })
+
+    if(updatedUser instanceof Error){
+       throw new Error(updatedUser.message)
+    }
+    const newToken = JWT.sign(
       { id: user.id, email: newData.email },
       process.env.MY_SECRET_KEY as string
     );
-    return {updatedUser,token}
+    return {updatedUser,newToken}
+
   }
-  return
+  catch(e){
+    if (e instanceof Error && e.message.includes("data")) {
+      return new Error("Token Invalido");
+    }
+    return e
+
+  }
+
+}
+  
+export const VerifyUser = async (token:string,password:string) =>{
+  try {
+    const jwtToken =JWT.verify(token,process.env.MY_SECRET_KEY as string) 
+
+    const decoded = jwtToken as {email: string}
+
+    if(decoded){
+      const user = await findUniqueService({
+        find:"email",
+
+        value:decoded.email,
+
+        model:prisma.user,
+
+        data:{
+          id:true,
+
+          name:true,
+
+          role:true,
+
+          password:true,
+        },
+        
+      })
+
+      const comparedPassword = await bcrypt.compare(password as string,user.password as string)
+
+      if (!comparedPassword){
+         throw new Error ("Senha Incorreta")
+
+      }
+      return user
+
+    }
+     throw new Error ("Token Inválido")
+
+  }
+  catch(e){
+    return e
+
+  }
 
 }
 
 export const deleteUserModel = async (token:string,password:string) =>{
-  const user = await handleVerifyUser(token,password )
+  try {
+    const user = await VerifyUser(token,password )
 
-  if(user){
+    if(user instanceof Error){
+       throw new Error(user.message)
+ 
+    }
     const deleted = await deleteService({find:"id",model:prisma.user,value:user.id})
+      
     if (deleted){
       return deleted
+
     }
-    return null
+     throw new Error("Usuário não foi Encontrado")
+
   }
-  return null
+  catch(e){
+    if (e instanceof Error && e.message.includes("data")) {
+      return new Error("Usuário não encontrado");
+  }
+  return e
+}
 }

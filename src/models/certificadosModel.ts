@@ -1,9 +1,9 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../libs/prisma";
-import { findAllService, findUniqueService } from "../services/modelFindService";
-import { updateService } from "../services/modelUpdateService";
-import { deleteService } from "../services/modelDeleteService";
-import { handleCreateModel } from "../services/handleModelsRequests";
+import { findAllService, findUniqueService } from "./findModel";
+import { updateService } from "./updateModel";
+import { deleteService } from "./deleteModel";
+
 
 
 export const getCertificadosModel = async () => {
@@ -31,21 +31,35 @@ export const getCertificadosModel = async () => {
 
     })
 
-    if(!certificados){
-      throw new Error ("Dados inválidos")
-
+      
+    if(certificados instanceof Error){
+       throw new Error (certificados.message)
     }
     return certificados;
+
     
   } 
-  catch
+  catch(e)
   {
-    throw new Error("Erro Interno");
+    return e;
   }
 };
 
 export const createCertificadoModel = async (data: Prisma.CertficadosCreateInput) => {
-  handleCreateModel({data,model:prisma.certficados,key:"certificado(s)"})
+  try {
+    const certificado = await prisma.certficados.create({data})
+    if (!certificado){
+       throw new Error ("Dados Inválidos")
+
+    }
+    return certificado
+
+  }catch(e){
+    if (e instanceof Error && e.message.includes("slug")) {
+      return new Error("Slug já cadastrado");
+    }
+    return e
+  }
 
 };
 
@@ -79,16 +93,17 @@ export const getCertificadoModel = async (slug: string) => {
 
     })
 
-    if (!certificado){
-      return null
+    if (certificado instanceof Error){
+      
+       throw new Error(certificado.message)
 
     }
 
     return certificado
 
   } 
-  catch {
-    return null;
+  catch (e){
+    return e;
 
   }
 };
@@ -106,14 +121,15 @@ export const updateCertificadoModel = async (id:string,validateData:Prisma.Certf
 
       model:prisma.certficados,
     })
-    if(!updated){
-      return null
+    if(updated instanceof Error){
+       throw new Error (updated.message)
 
     }
     return updated
 
-   }catch{
-    throw new Error ("Erro INTERNO")
+   }catch(e){
+      return e
+    
    }
 }
 
@@ -129,13 +145,14 @@ export const deleteCertificadoModel = async (id:string) =>{
       model:prisma.certficados,
 
    })
-   if(!updated){
-     return null
+   if(updated instanceof Error){
+      throw new Error (updated.message)
 
    }
    return updated
    
-  }catch{
-   throw new Error ("Erro INTERNO")
+  }catch(e){
+   return e
+   
   }
 }

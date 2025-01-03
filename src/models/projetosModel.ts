@@ -1,57 +1,69 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../libs/prisma";
-import { findAllService, findUniqueService } from "../services/modelFindService";
-import { deleteService } from "../services/modelDeleteService";
-import { handleCreateModel, handleUpdateModel } from "../services/handleModelsRequests";
+import { findAllService, findUniqueService } from "./findModel";
+import { updateService } from "./updateModel";
+import { deleteService } from "./deleteModel";
+
+
 
 export const getProjetosModel = async () => {
   try {
     const projetos = await findAllService({
-
       data:{
-            id: true,
+        id: true,
 
-            titulo: true,
+        titulo: true,
 
-            descricao: true,
+        descricao: true,
 
-            skills: true,
+        skills: true,
 
-            slug: true,
+        slug: true,
 
-            liveUrl: true,
+        liveUrl: true,
 
-            githubUrl: true,
+        githubUrl: true,
 
-            photo: true,
+        photo: true,
 
-            createdAt: true,
+        createdAt: true,
 
-            updatedAt: true,
+        updatedAt: true,
+
       },
 
       model:prisma.projetos
-      
+
     })
 
-    if(!projetos){
-      throw new Error ("Dados inválidos")
+    if(projetos instanceof Error){
+       throw new Error (projetos.message)
     }
-    return projetos;
-    
-
-
+      return projetos;
+      
     
   } 
-  catch 
+  catch(e)
   {
-    throw new Error();
+    return e;
   }
 };
 
-
 export const createProjetoModel = async (data: Prisma.ProjetosCreateInput) => {
-  handleCreateModel({data,model:prisma.projetos,key:"projeto(s)"})
+  try {
+    const projeto = await prisma.projetos.create({data})
+    if (!projeto){
+       throw new Error ("Dados Inválidos")
+
+    }
+    return projeto
+
+  }catch(e){
+    if (e instanceof Error && e.message.includes("slug")) {
+      return new Error("Slug já cadastrado");
+    }
+    return e
+  }
 
 };
 
@@ -93,23 +105,44 @@ export const getProjetoModel = async (slug: string) => {
 
     })
 
-    if (!projeto){
-      return null
+    if (projeto instanceof Error){
+      
+       throw new Error(projeto.message)
 
     }
 
     return projeto
 
   } 
-  catch {
-    return null;
+  catch (e){
+    return e;
 
   }
 };
 
-export const updateProjetoModel = async (id:string,validateData:Prisma.ProjetosUpdateInput) =>{
-  handleUpdateModel({id,model:prisma.projetos,validateData})
 
+
+export const updateProjetoModel = async (id:string,validateData:Prisma.ProjetosUpdateInput) =>{
+   try {
+     const updated = await updateService({
+       find:"id",
+
+       value:id,
+
+      data:validateData,
+
+      model:prisma.projetos,
+    })
+    if(updated instanceof Error){
+       throw new Error (updated.message)
+
+    }
+    return updated
+
+   }catch(e){
+      return e
+    
+   }
 }
 
 
@@ -121,15 +154,17 @@ export const deleteProjetoModel = async (id:string) =>{
 
       value:id,
 
-     model:prisma.projetos,
+      model:prisma.projetos,
+
    })
-   if(!updated){
-     return null
+   if(updated instanceof Error){
+      throw new Error (updated.message)
 
    }
    return updated
    
-  }catch{
-   throw new Error ("Erro INTERNO")
+  }catch(e){
+   return e
+   
   }
 }
