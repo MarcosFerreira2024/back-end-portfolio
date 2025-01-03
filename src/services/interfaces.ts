@@ -1,7 +1,5 @@
-import { Response , Request } from "express"
-import { schemaCertificados, schemaProjetos } from "./schema"
+import {  PrismaClient } from "@prisma/client"
 
-export type Key = "certificado(s)"|"projeto(s)"|"usuario(s)"
 
 export interface CrudUniqueParams<T> extends CrudManyParams<T> {
     value:string
@@ -14,7 +12,7 @@ export interface CrudUniqueParams<T> extends CrudManyParams<T> {
 export interface CrudManyParams<T>  {
     data:T,
 
-    model: any
+    model:any
 
 }
 
@@ -30,72 +28,54 @@ export interface Delete {
 
 
 
-export interface InterfaceGetAll {
+export interface GetAll {
     model : () => Promise<any>,
 
-    res : Response,
 
-    key:Key
 
 }
  
 
-export interface InterfaceCreateOne {
-    model:(data:any)=> Promise<any>,
+export interface CreateOne {
+    model:(data:any)=>Promise<any>,
 
-    body:any,
+    data:any,
 
-    res:Response,
     
-    key:Key
 
-    schema: typeof schemaCertificados| typeof schemaProjetos
 
 }
 
-export interface CreateOneModel{
+export interface Model{
     data: any
-
-    model: any
-    
-    key:Key
+    model:keyof PrismaClient
 
 }
 
 
-export interface InterfaceGetOne {
-  slug:string,
 
-  res:Response,
+export interface GetOne {
+  data:string,
 
   model:(data:any)=> Promise<any>; 
 
-  key:Key
 
 }
 
-export interface InterfaceDeleteOne {
+export interface DeleteOne {
     id:string,
-
-    res:Response,
-
-    key:Key,
 
     model:(data:any)=> Promise<any>
 
 }
 
-export interface InterfaceUpdateOne {
+export interface UpdateOne {
     id:string,
 
-    body:any,
+    data:any,
 
-    key:Key,
 
     model:(id:string,data: any)=> Promise<any>
 
-    schema:any,
 
-    res:Response
-    
 }
