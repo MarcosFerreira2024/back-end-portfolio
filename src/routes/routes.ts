@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { HTTP_STATUS } from "../services/httpStatus";
+import { HTTP_STATUS } from "../consts/httpStatus";
 //import { getProjetos } from "../controllers/projetosController";
 import {
   getAllUsers,

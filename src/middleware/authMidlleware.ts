@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
-import { HTTP_STATUS } from "../services/httpStatus";
+import { HTTP_STATUS } from "../consts/httpStatus";
 import prisma from "../libs/prisma";
-import { verifyToken } from "../services/handleToken";
-import { findUniqueService } from "../services/modelFindService";
+import { verifyToken } from "../services/token";
+import { findUniqueService } from "../models/findModel";
 
 
 export const middlewareAuth: RequestHandler = async (req,res,next) => {
