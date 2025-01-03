@@ -1,5 +1,4 @@
-import prisma from "../libs/prisma"
-import { CrudManyParams, CrudUniqueParams } from "./interfaces"
+import { CrudManyParams, CrudUniqueParams } from "../services/interfaces"
 
 export const findUniqueService = async<T>({find,value,data,model}:CrudUniqueParams<T>) =>{
 
@@ -12,14 +11,14 @@ export const findUniqueService = async<T>({find,value,data,model}:CrudUniquePara
             
         })
         if(!search){
-            return null
+             throw new Error ("Não foi Encontrado")
 
         }
         return search
 
     }
-    catch { 
-      return null
+    catch (e) { 
+      return e
 
     }
 
@@ -34,14 +33,14 @@ export const findAllService = async<T>({data,model}:CrudManyParams<T>) =>{
             
         })
         if(!search){
-            return null
+             throw new Error("Erro ao buscar")
 
         }
         return search
 
     }
-    catch { 
-      return null
+    catch(e) { 
+      return e
 
     }
 

@@ -1,4 +1,4 @@
-import {  Delete } from "./interfaces";
+import { Delete } from "../services/interfaces"
 
 export const deleteService= async ({find,value,model}:Delete)=>{
     try {
@@ -10,13 +10,15 @@ export const deleteService= async ({find,value,model}:Delete)=>{
 
         })
         if(!deleted){
-            return null
+             throw new Error("Não foi possivel deletar")
 
         }
         return deleted
 
-    }catch{
-        return null
+    }catch(e){
+        if(e instanceof Error && e.message.includes("data")){
+            throw new Error("Não Encontrado")
+        }
         
     }
 }

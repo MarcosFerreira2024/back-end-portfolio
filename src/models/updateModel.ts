@@ -1,5 +1,4 @@
-import prisma from "../libs/prisma";
-import { CrudUniqueParams, } from "./interfaces";
+import { CrudUniqueParams } from "../services/interfaces";
 
 export const updateService = async<T>({find,value,data,model}:CrudUniqueParams<T>) =>{
     try {
@@ -12,13 +11,16 @@ export const updateService = async<T>({find,value,data,model}:CrudUniqueParams<T
                 
         })
         if (!updated){
-            return undefined
+             throw new Error ("Não foi possivel Atualizar")
 
         }
         return updated
 
-    }catch{
-        return undefined
+    }catch (e){
+        if (e instanceof Error && e.message.includes("not found")){
+            throw new Error(`${find} não foi encontrado`)
+        }
+        return e 
         
     }
 }

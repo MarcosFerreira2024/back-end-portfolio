@@ -1,4 +1,3 @@
-import { Request } from "express";
 import JWT from "jsonwebtoken"
 
 export const verifyToken = async (token: string) => {
@@ -25,4 +24,8 @@ export const getToken = async (authorization:string)=>{
     return token
 
   }
+  return null
 }
+
+
+
