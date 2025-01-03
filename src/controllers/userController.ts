@@ -1,5 +1,5 @@
 import z from "zod";
-import { HTTP_STATUS } from "../services/httpStatus";
+import { HTTP_STATUS } from "../consts/httpStatus";
 import { Request, RequestHandler, Response } from "express";
 import {
   registerModel,
@@ -10,14 +10,14 @@ import {
   deleteUserModel,
 } from "../models/userModel";
 import bcrypt from "bcrypt";
-import { schemaUser } from "../services/schema";
-import { getToken } from "../services/handleToken";
+import { schemaUserSignIn, schemaUserLogin } from "../services/schema";
+import { getToken } from "../services/token";
 
 export const registerUser = async (req: Request, res: Response) => {
   
   req.body.role = "USER"; //seta a role como user caso alguem mal intencionado tente mudar a role na requisição
 
-  const parsedData = schemaUser.safeParse(req.body);
+  const parsedData = schemaUserSignIn.safeParse(req.body);
 
   try {
     if (!parsedData.success) {
@@ -41,29 +41,34 @@ export const registerUser = async (req: Request, res: Response) => {
       password: hashedPassword,
 
     });
-    res.status(HTTP_STATUS.CREATED).json(user);
+    if(user instanceof Error){
+      res.status(HTTP_STATUS.BAD_REQUEST).json({ message: user.message });
+      return
+    }
+    res.status(HTTP_STATUS.OK).json({
+      user
+    })
+    return
 
-  } catch (e) {
+  } catch {
 
-    res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "Usuario já existe" });
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Erro interno" });
   }
 };
 
 export const loginUser = async (req: Request, res: Response) => {
   // pega um usuário especifico e salva seu token
-  const schema = z.object({
-
-    email: z.string().email({ message: "Email inválido" }), //schema zod validação de dados
-
-    password: z.string().min(6, "A senha deve ter no minimo 6 caracteres"),
-
-  });
   try {
-    const data = schema.safeParse(req.body);
+    const data = schemaUserLogin.safeParse(req.body);
 
     if (data.success) {
       const userToken = await loginModel(data.data.email, data.data.password); //retorna o token do usuário
 
+      if(userToken instanceof Error){
+        res.status(HTTP_STATUS.BAD_REQUEST).json(userToken.message);
+
+      return;
+      }
       res.status(HTTP_STATUS.OK).json(userToken);
 
       return;
@@ -72,34 +77,50 @@ export const loginUser = async (req: Request, res: Response) => {
 
   } catch (e) {
 
-    res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "Usuário não EXISTE" });
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Erro interno" });
 
   }
 };
 
 export const getUserInfo = async (req: Request, res: Response) => {
-  if(req.headers.authorization && req.body){
+  if(req.headers.authorization && req.body.password){
 
-    const token = await getToken(req.headers.authorization) as string
+    try {
+      const token = await getToken(req.headers.authorization) as string
 
-    const user = await getUserInfoModel(token,req.body.password)
+      if(!token){
+         throw new Error ("Token Inválido")
+      }
+      
+      const user = await getUserInfoModel(token,req.body.password)
 
-    if (user){
+      if(user instanceof Error){
 
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
+          message:user.message
+      
+        })
+        return
+      }
+    
       res.status(HTTP_STATUS.OK).json({
         user
       })
 
       return
-    }
+      }
+    
+      catch(e){
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message: e
+      })
+      }
   }
-
-  res.status(HTTP_STATUS.BAD_REQUEST).json({
-    message:'Senha Incorreta'
-
-  })
-  return
-};
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message:"Dados Inválidos"
+      })
+      return
+}
 
 export const getAllUsers = async (req: Request, res: Response) => {
 
@@ -107,6 +128,11 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
     const users = await getAllUsersModel();
 
+    if(users instanceof Error){
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message:users.message
+      })
+    }
     res.status(HTTP_STATUS.OK).json({
       users,
     });
@@ -130,10 +156,17 @@ export const updateUser:RequestHandler = async (req,res) => {
       if(token){
 
         const updated = await updateUserModel(token,req.body)
+        if(updated instanceof Error){
+          res.status(HTTP_STATUS.BAD_REQUEST).json({
+            message:updated.message
+          })
+          return
+        }
 
         res.status(HTTP_STATUS.OK).json({
-          updated
+          message:updated
         })
+        return
 
       }
       
@@ -143,14 +176,15 @@ export const updateUser:RequestHandler = async (req,res) => {
       return
     }
     res.status(HTTP_STATUS.BAD_REQUEST).json({
-      message:"Dados Inválidos"
+      message:"Senha necessária"
     })
     return
     
   }catch(e){
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message:"Erro Interno"
+      message: "Erro Interno"
     })
+    return
 
   }
 };
@@ -169,10 +203,10 @@ export const deleteUser:RequestHandler = async (req,res) => {
 
         const deleted = await deleteUserModel(token,req.body.password)
 
-        if(!deleted){
+        if(deleted instanceof Error){
 
           res.status(HTTP_STATUS.BAD_REQUEST).json({
-            message:"Usuário já foi excluido"
+            message:deleted.message
           })
 
           return
@@ -180,6 +214,7 @@ export const deleteUser:RequestHandler = async (req,res) => {
         res.status(HTTP_STATUS.OK).json({
           deleted
         })
+        return
       }
       
       res.status(HTTP_STATUS.BAD_REQUEST).json({
@@ -188,7 +223,7 @@ export const deleteUser:RequestHandler = async (req,res) => {
       return
     }
     res.status(HTTP_STATUS.BAD_REQUEST).json({
-      message:"Dados Inválidos"
+      message:"Insira sua senha"
     })
     return
   }catch{
