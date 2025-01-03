@@ -33,7 +33,7 @@ export const schemaCertificados = z.object({
   
 });
 
-export const schemaUser = z 
+export const schemaUserSignIn = z 
     .object({
       name: z.string().min(2, "O nome deve ter no minimo 2 caracteres"),
 
@@ -52,3 +52,12 @@ export const schemaUser = z
       path: ["confirmPassord"],
 
     });
+
+
+export const schemaUserLogin = z.object({
+
+    email: z.string().email({ message: "Email inválido" }), //schema zod validação de dados
+
+    password: z.string().min(6, "A senha deve ter no minimo 6 caracteres"),
+
+  });
