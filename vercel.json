@@ -1,15 +1,11 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "api/**/*.ts",
-        "use": "@vercel/node"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/api/(.*)",
-        "dest": "/api/$1.ts"
-      }
-    ]
+  "builds": [
+    {
+      "src": "dist/server.js", 
+      "use": "@vercel/node"    
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "@DATABASE_URL" 
   }
+}
