@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HTTP_STATUS = void 0;
-exports.HTTP_STATUS = {
+const HTTP_STATUS = {
     OK: 200, // Requisição bem-sucedida
     CREATED: 201, // Recurso criado com sucesso
     BAD_REQUEST: 400, // Requisição inválida
@@ -12,3 +11,4 @@ exports.HTTP_STATUS = {
     INTERNAL_SERVER_ERROR: 500, // Erro interno do servidor
     BAD_GATEWAY: 502, // Gateway inválido
 };
+exports.default = HTTP_STATUS;

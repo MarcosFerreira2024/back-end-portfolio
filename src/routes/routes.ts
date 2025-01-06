@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { HTTP_STATUS } from "../consts/httpStatus";
 //import { getProjetos } from "../controllers/projetosController";
 import {
   getAllUsers,
@@ -19,6 +18,7 @@ import {
   updateProjeto,
 } from "../controllers/projetosController";
 import { createCertificado, deleteCertificado, getCertificado, getCertificados, updateCertificado } from "../controllers/certificadosController";
+import HTTP_STATUS from "../consts/httpStatus";
 
 
 const rout = Router();

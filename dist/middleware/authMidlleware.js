@@ -13,21 +13,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.middlewareAdmin = exports.middlewareAuth = void 0;
-const httpStatus_1 = require("../consts/httpStatus");
 const prisma_1 = __importDefault(require("../libs/prisma"));
 const token_1 = require("../services/token");
 const findModel_1 = require("../models/findModel");
+const httpStatus_1 = __importDefault(require("../consts/httpStatus"));
 const middlewareAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         res
-            .status(httpStatus_1.HTTP_STATUS.UNAUTHORIZED)
+            .status(httpStatus_1.default.UNAUTHORIZED)
             .json({ message: "Você não está logado" });
         return;
     }
     try {
         const email = yield (0, token_1.verifyToken)(req.headers.authorization.split(" ")[1]);
         if (!email) {
-            res.status(httpStatus_1.HTTP_STATUS.UNAUTHORIZED).json({ message: "Token invalido" });
+            res.status(httpStatus_1.default.UNAUTHORIZED).json({ message: "Token invalido" });
             return;
         }
         next();
@@ -35,7 +35,7 @@ const middlewareAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
     catch (_a) {
         res
-            .status(httpStatus_1.HTTP_STATUS.INTERNAL_SERVER_ERROR)
+            .status(httpStatus_1.default.INTERNAL_SERVER_ERROR)
             .json({ message: "Erro interno" });
     }
 });
@@ -43,7 +43,7 @@ exports.middlewareAuth = middlewareAuth;
 const middlewareAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         res
-            .status(httpStatus_1.HTTP_STATUS.UNAUTHORIZED)
+            .status(httpStatus_1.default.UNAUTHORIZED)
             .json({ message: "Você não está logado" });
         return;
     }
@@ -51,7 +51,7 @@ const middlewareAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         const email = yield (0, token_1.verifyToken)(req.headers.authorization.split(" ")[1]);
         if (!email) {
             res
-                .status(httpStatus_1.HTTP_STATUS.UNAUTHORIZED)
+                .status(httpStatus_1.default.UNAUTHORIZED)
                 .json({ message: "Token invalido ou expirado" });
             return;
         }
@@ -65,7 +65,7 @@ const middlewareAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         });
         if (!user || user.role !== "ADMIN") { // verifica se o usuario é admin ou se ele nao existe e esta tentando acessar a rota
             res
-                .status(httpStatus_1.HTTP_STATUS.FORBIDDEN)
+                .status(httpStatus_1.default.FORBIDDEN)
                 .json({ message: "Você não tem permissão para acessar essa rota" });
             return;
         }
@@ -74,7 +74,7 @@ const middlewareAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (e) {
         res
-            .status(httpStatus_1.HTTP_STATUS.UNAUTHORIZED)
+            .status(httpStatus_1.default.UNAUTHORIZED)
             .json({ message: "Token invalido ou expirado" });
     }
 });

@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
-import { HTTP_STATUS } from "../consts/httpStatus";
 import { schemaProjetos } from "../services/schema";
 import { handleCreateOne, handleDeleteOne, handleGetAll, handleGetOne, handleUpdateOne} from "../services/controllerRequests";
 import { createProjetoModel, deleteProjetoModel, getProjetoModel, getProjetosModel, updateProjetoModel } from "../models/projetosModel";
+import HTTP_STATUS from "../consts/httpStatus";
 
 
 export const getProjetos: RequestHandler = async (req, res) => {

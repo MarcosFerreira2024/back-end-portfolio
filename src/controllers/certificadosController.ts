@@ -1,16 +1,15 @@
 import { RequestHandler } from "express";
 import { createCertificadoModel, deleteCertificadoModel, getCertificadoModel, getCertificadosModel, updateCertificadoModel } from "../models/certificadosModel";
-import { HTTP_STATUS } from "../consts/httpStatus";
 import { schemaCertificados } from "../services/schema";
 import { handleCreateOne, handleDeleteOne, handleGetAll, handleGetOne, handleUpdateOne} from "../services/controllerRequests";
-
+import HTTP_STATUS from "../consts/httpStatus";
 
 export const getCertificados: RequestHandler = async (req, res) => {
 
   try {
     const certificados = await handleGetAll({model:getCertificadosModel})
     if(certificados instanceof Error){
-      res.status(HTTP_STATUS.BAD_REQUEST).json({
+      res.status(HTTP_STATUS.BAD_GATEWAY).json({
         message: certificados.message
       })
       return

@@ -1,5 +1,3 @@
-import z from "zod";
-import { HTTP_STATUS } from "../consts/httpStatus";
 import { Request, RequestHandler, Response } from "express";
 import {
   registerModel,
@@ -12,6 +10,7 @@ import {
 import bcrypt from "bcrypt";
 import { schemaUserSignIn, schemaUserLogin } from "../services/schema";
 import { getToken } from "../services/token";
+import HTTP_STATUS from "../consts/httpStatus";
 
 export const registerUser = async (req: Request, res: Response) => {
   

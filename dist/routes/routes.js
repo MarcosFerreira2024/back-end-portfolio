@@ -1,16 +1,19 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const httpStatus_1 = require("../consts/httpStatus");
 //import { getProjetos } from "../controllers/projetosController";
 const userController_1 = require("../controllers/userController");
 const authMidlleware_1 = require("../middleware/authMidlleware");
 const projetosController_1 = require("../controllers/projetosController");
 const certificadosController_1 = require("../controllers/certificadosController");
+const httpStatus_1 = __importDefault(require("../consts/httpStatus"));
 const rout = (0, express_1.Router)();
 // Rota para verificar se o servidor está online
 rout.get("/ping", (req, res) => {
-    res.status(httpStatus_1.HTTP_STATUS.OK).json({ pong: true });
+    res.status(httpStatus_1.default.OK).json({ pong: true });
 });
 // Rotas de Usuário
 rout.post("/register", userController_1.registerUser); // Rota para CRIAR um usuario

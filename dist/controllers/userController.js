@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getAllUsers = exports.getUserInfo = exports.loginUser = exports.registerUser = void 0;
-const httpStatus_1 = require("../consts/httpStatus");
 const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const schema_1 = require("../services/schema");
 const token_1 = require("../services/token");
+const httpStatus_1 = __importDefault(require("../consts/httpStatus"));
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     req.body.role = "USER"; //seta a role como user caso alguem mal intencionado tente mudar a role na requisição
     const parsedData = schema_1.schemaUserSignIn.safeParse(req.body);
@@ -25,7 +25,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (!parsedData.success) {
             //Se acontecer algum erro a função irá retornar um erro explicando o que aconteceu
             res
-                .status(httpStatus_1.HTTP_STATUS.BAD_REQUEST)
+                .status(httpStatus_1.default.BAD_REQUEST)
                 .json({ message: parsedData.error.flatten().fieldErrors });
             return;
         }
@@ -39,16 +39,16 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             password: hashedPassword,
         });
         if (user instanceof Error) {
-            res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({ message: user.message });
+            res.status(httpStatus_1.default.BAD_REQUEST).json({ message: user.message });
             return;
         }
-        res.status(httpStatus_1.HTTP_STATUS.OK).json({
+        res.status(httpStatus_1.default.OK).json({
             user
         });
         return;
     }
     catch (_a) {
-        res.status(httpStatus_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Erro interno" });
+        res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({ message: "Erro interno" });
     }
 });
 exports.registerUser = registerUser;
@@ -59,16 +59,16 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (data.success) {
             const userToken = yield (0, userModel_1.loginModel)(data.data.email, data.data.password); //retorna o token do usuário
             if (userToken instanceof Error) {
-                res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json(userToken.message);
+                res.status(httpStatus_1.default.BAD_REQUEST).json(userToken.message);
                 return;
             }
-            res.status(httpStatus_1.HTTP_STATUS.OK).json(userToken);
+            res.status(httpStatus_1.default.OK).json(userToken);
             return;
         }
-        res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({ message: data.error.flatten().fieldErrors });
+        res.status(httpStatus_1.default.BAD_REQUEST).json({ message: data.error.flatten().fieldErrors });
     }
     catch (e) {
-        res.status(httpStatus_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Erro interno" });
+        res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({ message: "Erro interno" });
     }
 });
 exports.loginUser = loginUser;
@@ -81,23 +81,23 @@ const getUserInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             }
             const user = yield (0, userModel_1.getUserInfoModel)(token, req.body.password);
             if (user instanceof Error) {
-                res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+                res.status(httpStatus_1.default.BAD_REQUEST).json({
                     message: user.message
                 });
                 return;
             }
-            res.status(httpStatus_1.HTTP_STATUS.OK).json({
+            res.status(httpStatus_1.default.OK).json({
                 user
             });
             return;
         }
         catch (e) {
-            res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+            res.status(httpStatus_1.default.BAD_REQUEST).json({
                 message: e
             });
         }
     }
-    res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+    res.status(httpStatus_1.default.BAD_REQUEST).json({
         message: "Dados Inválidos"
     });
     return;
@@ -107,16 +107,16 @@ const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const users = yield (0, userModel_1.getAllUsersModel)();
         if (users instanceof Error) {
-            res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+            res.status(httpStatus_1.default.BAD_REQUEST).json({
                 message: users.message
             });
         }
-        res.status(httpStatus_1.HTTP_STATUS.OK).json({
+        res.status(httpStatus_1.default.OK).json({
             users,
         });
     }
     catch (_a) {
-        res.status(httpStatus_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
             message: "ERRO INTERNO",
         });
     }
@@ -129,28 +129,28 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             if (token) {
                 const updated = yield (0, userModel_1.updateUserModel)(token, req.body);
                 if (updated instanceof Error) {
-                    res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+                    res.status(httpStatus_1.default.BAD_REQUEST).json({
                         message: updated.message
                     });
                     return;
                 }
-                res.status(httpStatus_1.HTTP_STATUS.OK).json({
+                res.status(httpStatus_1.default.OK).json({
                     message: updated
                 });
                 return;
             }
-            res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+            res.status(httpStatus_1.default.BAD_REQUEST).json({
                 message: "Token Expirado ou inválido"
             });
             return;
         }
-        res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+        res.status(httpStatus_1.default.BAD_REQUEST).json({
             message: "Senha necessária"
         });
         return;
     }
     catch (e) {
-        res.status(httpStatus_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
             message: "Erro Interno"
         });
         return;
@@ -165,28 +165,28 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             if (token) {
                 const deleted = yield (0, userModel_1.deleteUserModel)(token, req.body.password);
                 if (deleted instanceof Error) {
-                    res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+                    res.status(httpStatus_1.default.BAD_REQUEST).json({
                         message: deleted.message
                     });
                     return;
                 }
-                res.status(httpStatus_1.HTTP_STATUS.OK).json({
+                res.status(httpStatus_1.default.OK).json({
                     deleted
                 });
                 return;
             }
-            res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+            res.status(httpStatus_1.default.BAD_REQUEST).json({
                 message: "Token Expirado ou inválido"
             });
             return;
         }
-        res.status(httpStatus_1.HTTP_STATUS.BAD_REQUEST).json({
+        res.status(httpStatus_1.default.BAD_REQUEST).json({
             message: "Insira sua senha"
         });
         return;
     }
     catch (_a) {
-        res.status(httpStatus_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        res.status(httpStatus_1.default.INTERNAL_SERVER_ERROR).json({
             message: "Erro Interno"
         });
     }
