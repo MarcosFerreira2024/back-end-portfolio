@@ -1,14 +1,14 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../libs/prisma";
-import { findAllService, findUniqueService } from "./findModel";
-import { updateService } from "./updateModel";
-import { deleteService } from "./deleteModel";
+import { findAllModel, findUniqueModel } from "./findModel";
+import { updateModel } from "./updateModel";
+import { deleteModel } from "./deleteModel";
 
 
 
 export const getCertificadosModel = async () => {
   try {
-    const certificados = await findAllService({
+    const certificados = await findAllModel({
       data:{
         id: true,
 
@@ -67,7 +67,7 @@ export const getCertificadoModel = async (slug: string) => {
  
   try {
 
-    const certificado = await findUniqueService({
+    const certificado = await findUniqueModel({
 
       find:"slug",
 
@@ -112,7 +112,7 @@ export const getCertificadoModel = async (slug: string) => {
 
 export const updateCertificadoModel = async (id:string,validateData:Prisma.CertficadosUpdateInput) =>{
    try {
-     const updated = await updateService({
+     const updated = await updateModel({
        find:"id",
 
        value:id,
@@ -137,7 +137,7 @@ export const updateCertificadoModel = async (id:string,validateData:Prisma.Certf
 
 export const deleteCertificadoModel = async (id:string) =>{
   try {
-    const updated = await deleteService({
+    const updated = await deleteModel({
       find:"id",
 
       value:id,

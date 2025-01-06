@@ -3,9 +3,9 @@ import prisma from "../libs/prisma";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import * as JWT from "jsonwebtoken";
-import { findUniqueService } from "./findModel";
-import { deleteService } from "./deleteModel";
-import { updateService } from "./updateModel";
+import { findUniqueModel } from "./findModel";
+import { deleteModel } from "./deleteModel";
+import { updateModel } from "./updateModel";
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ export const registerModel = async (data: Prisma.UserCreateInput) => {
 
 export const loginModel = async (email: string, senha: string) => {
   try {
-    const findedUser = await findUniqueService({
+    const findedUser = await findUniqueModel({
       find:"email",
 
       value:email,
@@ -137,7 +137,7 @@ export const updateUserModel = async (token:string,data:Prisma.UserUpdateInput) 
        throw new Error (user.message)
 
     }
-    const updatedUser = await updateService({find:"id",model:prisma.user,value:user.id,data:newData })
+    const updatedUser = await updateModel({find:"id",model:prisma.user,value:user.id,data:newData })
 
     if(updatedUser instanceof Error){
        throw new Error(updatedUser.message)
@@ -166,7 +166,7 @@ export const VerifyUser = async (token:string,password:string) =>{
     const decoded = jwtToken as {email: string}
 
     if(decoded){
-      const user = await findUniqueService({
+      const user = await findUniqueModel({
         find:"email",
 
         value:decoded.email,
@@ -212,7 +212,7 @@ export const deleteUserModel = async (token:string,password:string) =>{
        throw new Error(user.message)
  
     }
-    const deleted = await deleteService({find:"id",model:prisma.user,value:user.id})
+    const deleted = await deleteModel({find:"id",model:prisma.user,value:user.id})
       
     if (deleted){
       return deleted

@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { HTTP_STATUS } from "../consts/httpStatus";
 import prisma from "../libs/prisma";
 import { verifyToken } from "../services/token";
-import { findUniqueService } from "../models/findModel";
+import { findUniqueModel } from "../models/findModel";
 
 
 export const middlewareAuth: RequestHandler = async (req,res,next) => {
@@ -57,7 +57,7 @@ export const middlewareAdmin: RequestHandler = async (req, res, next) => {
       return;
 
     }
-    const user = await findUniqueService({
+    const user = await findUniqueModel({
       find:"email",
 
       value:email,

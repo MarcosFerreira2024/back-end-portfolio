@@ -1,14 +1,14 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../libs/prisma";
-import { findAllService, findUniqueService } from "./findModel";
-import { updateService } from "./updateModel";
-import { deleteService } from "./deleteModel";
+import { findAllModel, findUniqueModel } from "./findModel";
+import { updateModel } from "./updateModel";
+import { deleteModel } from "./deleteModel";
 
 
 
 export const getProjetosModel = async () => {
   try {
-    const projetos = await findAllService({
+    const projetos = await findAllModel({
       data:{
         id: true,
 
@@ -71,7 +71,7 @@ export const getProjetoModel = async (slug: string) => {
  
   try {
 
-    const projeto = await findUniqueService({
+    const projeto = await findUniqueModel({
 
       find:"slug",
 
@@ -124,7 +124,7 @@ export const getProjetoModel = async (slug: string) => {
 
 export const updateProjetoModel = async (id:string,validateData:Prisma.ProjetosUpdateInput) =>{
    try {
-     const updated = await updateService({
+     const updated = await updateModel({
        find:"id",
 
        value:id,
@@ -149,7 +149,7 @@ export const updateProjetoModel = async (id:string,validateData:Prisma.ProjetosU
 
 export const deleteProjetoModel = async (id:string) =>{
   try {
-    const updated = await deleteService({
+    const updated = await deleteModel({
       find:"id",
 
       value:id,

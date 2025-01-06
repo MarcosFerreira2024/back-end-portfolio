@@ -1,6 +1,6 @@
 import { CrudUniqueParams } from "../services/interfaces";
 
-export const updateService = async<T>({find,value,data,model}:CrudUniqueParams<T>) =>{
+export const updateModel = async<T>({find,value,data,model}:CrudUniqueParams<T>) =>{
     try {
         const updated = await model.update({
                 where:{

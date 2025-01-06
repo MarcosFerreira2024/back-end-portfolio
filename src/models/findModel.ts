@@ -1,6 +1,6 @@
 import { CrudManyParams, CrudUniqueParams } from "../services/interfaces"
 
-export const findUniqueService = async<T>({find,value,data,model}:CrudUniqueParams<T>) =>{
+export const findUniqueModel = async<T>({find,value,data,model}:CrudUniqueParams<T>) =>{
 
     try {
         const search = await model.findUnique({
@@ -25,7 +25,7 @@ export const findUniqueService = async<T>({find,value,data,model}:CrudUniquePara
 }
 
 
-export const findAllService = async<T>({data,model}:CrudManyParams<T>) =>{
+export const findAllModel = async<T>({data,model}:CrudManyParams<T>) =>{
 
     try {
         const search = await model.findMany({

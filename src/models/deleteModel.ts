@@ -1,6 +1,6 @@
 import { Delete } from "../services/interfaces"
 
-export const deleteService= async ({find,value,model}:Delete)=>{
+export const deleteModel= async ({find,value,model}:Delete)=>{
     try {
         const deleted = await model.delete({
             where:{
