@@ -7,20 +7,20 @@ import HTTP_STATUS from "./consts/httpStatus";
 
 
 dotenv.config();
-const porta = process.env.PORTA || 3000; 
+const porta = process.env.PORTA || 3000;
 
 const server = express();
 
-server.use(cors({ origin: "*"}))
+server.use(cors({ origin: "*" }))
 
 server.use(express.json());
 
 server.use(express.urlencoded({ extended: true }));
 
-server.use(rout);
+server.use("/api", rout);
 
 server.use((req, res) => {
-  res.status(HTTP_STATUS.NOT_FOUND).json({ route: "Not found" }); 
+  res.status(HTTP_STATUS.NOT_FOUND).json({ route: "Not found" });
 });
 
 server.listen(porta, () => {

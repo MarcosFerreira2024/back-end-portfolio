@@ -14,7 +14,7 @@ const server = (0, express_1.default)();
 server.use((0, cors_1.default)({ origin: "*" }));
 server.use(express_1.default.json());
 server.use(express_1.default.urlencoded({ extended: true }));
-server.use(routes_1.default);
+server.use("/api", routes_1.default);
 server.use((req, res) => {
     res.status(httpStatus_1.default.NOT_FOUND).json({ route: "Not found" });
 });
