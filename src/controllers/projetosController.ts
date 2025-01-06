@@ -15,9 +15,9 @@ export const getProjetos: RequestHandler = async (req, res) => {
       })
       return
     }
-    res.status(HTTP_STATUS.OK).json({
+    res.status(HTTP_STATUS.OK).json(
       projetos
-    })
+    )
     return
   }catch {
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({

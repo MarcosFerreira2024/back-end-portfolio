@@ -18,6 +18,8 @@ export const getProjetosModel = async () => {
 
         skills: true,
 
+        skillsPath:true,
+
         slug: true,
 
         liveUrl: true,
@@ -25,6 +27,8 @@ export const getProjetosModel = async () => {
         githubUrl: true,
 
         photo: true,
+
+        photoDark:true,
 
         createdAt: true,
 
