@@ -13,6 +13,8 @@ export const schemaProjetos = z.object({
 
   photo: z.string().min(1,"A photo é obrigatória"),
 
+  photoDark: z.string().min(1,"A photo em DarkMode é opcional mas deve ser preenchida corretamente").optional(),
+
   liveUrl: z.string().min(1).url('A URL deve ser válida'),
 
   githubUrl: z.string().min(1).url('A URL deve ser válida'),
