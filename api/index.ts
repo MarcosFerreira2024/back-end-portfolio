@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import rout from "./routes/routes";
-import { HTTP_STATUS } from "./consts/httpStatus";
+import rout from "../src/routes/routes";
+import { HTTP_STATUS } from "../src/consts/httpStatus";
 import cors from "cors";
 
 
