@@ -6,8 +6,6 @@
       "use": "@vercel/node"
     }
   ],
-  "outputDirectory": "dist",
-  "hooks": {
-    "build": "tsc && prisma generate"
-  }
+  "outputDirectory": "dist"
+ 
 }
