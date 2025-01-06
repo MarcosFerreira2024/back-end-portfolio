@@ -1,11 +1,13 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "dist/server.js", 
-      "use": "@vercel/node"    
+      "src": "dist/server.js",
+      "use": "@vercel/node"
     }
   ],
-  "env": {
-    "DATABASE_URL": "@DATABASE_URL" 
+  "outputDirectory": "dist",
+  "hooks": {
+    "build": "tsc && prisma generate"
   }
 }
