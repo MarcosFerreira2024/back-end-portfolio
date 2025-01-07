@@ -14,11 +14,13 @@ exports.schemaProjetos = zod_1.default.object({
     photo: zod_1.default.string().min(1, "A photo é obrigatória"),
     photoDark: zod_1.default.string().min(1, "A photo em DarkMode é opcional mas deve ser preenchida corretamente").optional(),
     liveUrl: zod_1.default.string().min(1).url('A URL deve ser válida'),
+    order: zod_1.default.string().min(1).max(1).optional(),
     githubUrl: zod_1.default.string().min(1).url('A URL deve ser válida'),
 });
 exports.schemaCertificados = zod_1.default.object({
     titulo: zod_1.default.string().min(1, 'O título é obrigatório'),
     descricao: zod_1.default.string().min(1, 'A descrição é obrigatória'),
+    order: zod_1.default.string().min(1).max(1).optional(),
     horas: zod_1.default.string().min(1, 'As horas são obrigatórias'),
     slug: zod_1.default.string().min(1, 'O slug é obrigatório'),
     url: zod_1.default.string().url('A URL deve ser válida'),

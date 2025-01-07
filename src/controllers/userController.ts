@@ -13,7 +13,7 @@ import { getToken } from "../services/token";
 import HTTP_STATUS from "../consts/httpStatus";
 
 export const registerUser = async (req: Request, res: Response) => {
-  
+
   req.body.role = "USER"; //seta a role como user caso alguem mal intencionado tente mudar a role na requisição
 
   const parsedData = schemaUserSignIn.safeParse(req.body);
@@ -40,7 +40,7 @@ export const registerUser = async (req: Request, res: Response) => {
       password: hashedPassword,
 
     });
-    if(user instanceof Error){
+    if (user instanceof Error) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({ message: user.message });
       return
     }
@@ -63,10 +63,10 @@ export const loginUser = async (req: Request, res: Response) => {
     if (data.success) {
       const userToken = await loginModel(data.data.email, data.data.password); //retorna o token do usuário
 
-      if(userToken instanceof Error){
+      if (userToken instanceof Error) {
         res.status(HTTP_STATUS.BAD_REQUEST).json(userToken.message);
 
-      return;
+        return;
       }
       res.status(HTTP_STATUS.OK).json(userToken);
 
@@ -82,43 +82,43 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 export const getUserInfo = async (req: Request, res: Response) => {
-  if(req.headers.authorization && req.body.password){
+  if (req.headers.authorization && req.body.password) {
 
     try {
       const token = await getToken(req.headers.authorization) as string
 
-      if(!token){
-         throw new Error ("Token Inválido")
+      if (!token) {
+        throw new Error("Token Inválido")
       }
-      
-      const user = await getUserInfoModel(token,req.body.password)
 
-      if(user instanceof Error){
+      const user = await getUserInfoModel(token, req.body.password)
+
+      if (user instanceof Error) {
 
         res.status(HTTP_STATUS.BAD_REQUEST).json({
-          message:user.message
-      
+          message: user.message
+
         })
         return
       }
-    
+
       res.status(HTTP_STATUS.OK).json({
         user
       })
 
       return
-      }
-    
-      catch(e){
+    }
+
+    catch (e) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
         message: e
       })
-      }
+    }
   }
-      res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message:"Dados Inválidos"
-      })
-      return
+  res.status(HTTP_STATUS.BAD_REQUEST).json({
+    message: "Dados Inválidos"
+  })
+  return
 }
 
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -127,9 +127,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
     const users = await getAllUsersModel();
 
-    if(users instanceof Error){
+    if (users instanceof Error) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message:users.message
+        message: users.message
       })
     }
     res.status(HTTP_STATUS.OK).json({
@@ -145,41 +145,41 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-export const updateUser:RequestHandler = async (req,res) => {
+export const updateUser: RequestHandler = async (req, res) => {
   try {
 
-    if(req.headers.authorization && req.body.password){
+    if (req.headers.authorization && req.body.password) {
 
       const token = await getToken(req.headers.authorization)
 
-      if(token){
+      if (token) {
 
-        const updated = await updateUserModel(token,req.body)
-        if(updated instanceof Error){
+        const updated = await updateUserModel(token, req.body)
+        if (updated instanceof Error) {
           res.status(HTTP_STATUS.BAD_REQUEST).json({
-            message:updated.message
+            message: updated.message
           })
           return
         }
 
         res.status(HTTP_STATUS.OK).json({
-          message:updated
+          message: updated
         })
         return
 
       }
-      
+
       res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message:"Token Expirado ou inválido"
+        message: "Token Expirado ou inválido"
       })
       return
     }
     res.status(HTTP_STATUS.BAD_REQUEST).json({
-      message:"Senha necessária"
+      message: "Senha necessária"
     })
     return
-    
-  }catch(e){
+
+  } catch (e) {
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       message: "Erro Interno"
     })
@@ -190,22 +190,22 @@ export const updateUser:RequestHandler = async (req,res) => {
 
 
 
-export const deleteUser:RequestHandler = async (req,res) => {
+export const deleteUser: RequestHandler = async (req, res) => {
   (req.body)
 
   try {
-    if(req.headers.authorization && req.body.password){
+    if (req.headers.authorization && req.body.password) {
 
       const token = await getToken(req.headers.authorization)
 
-      if(token){
+      if (token) {
 
-        const deleted = await deleteUserModel(token,req.body.password)
+        const deleted = await deleteUserModel(token, req.body.password)
 
-        if(deleted instanceof Error){
+        if (deleted instanceof Error) {
 
           res.status(HTTP_STATUS.BAD_REQUEST).json({
-            message:deleted.message
+            message: deleted.message
           })
 
           return
@@ -215,19 +215,19 @@ export const deleteUser:RequestHandler = async (req,res) => {
         })
         return
       }
-      
+
       res.status(HTTP_STATUS.BAD_REQUEST).json({
-        message:"Token Expirado ou inválido"
+        message: "Token Expirado ou inválido"
       })
       return
     }
     res.status(HTTP_STATUS.BAD_REQUEST).json({
-      message:"Insira sua senha"
+      message: "Insira sua senha"
     })
     return
-  }catch{
+  } catch {
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-      message:"Erro Interno"
+      message: "Erro Interno"
     })
   }
 };

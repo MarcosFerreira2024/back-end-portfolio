@@ -9,14 +9,16 @@ import { deleteModel } from "./deleteModel";
 export const getCertificadosModel = async () => {
   try {
     const certificados = await findAllModel({
-      data:{
+      data: {
         id: true,
 
         titulo: true,
 
         descricao: true,
 
-        horas:true,
+        horas: true,
+
+        order: true,
 
         slug: true,
 
@@ -27,34 +29,35 @@ export const getCertificadosModel = async () => {
         updatedAt: true,
       },
 
-      model:prisma.certficados
+      model: prisma.certficados,
+      order: "horas",
+      orderValue: "asc"
 
     })
 
-      
-    if(certificados instanceof Error){
-       throw new Error (certificados.message)
+
+    if (certificados instanceof Error) {
+      throw new Error(certificados.message)
     }
     return certificados;
 
-    
-  } 
-  catch(e)
-  {
+
+  }
+  catch (e) {
     return e;
   }
 };
 
 export const createCertificadoModel = async (data: Prisma.CertficadosCreateInput) => {
   try {
-    const certificado = await prisma.certficados.create({data})
-    if (!certificado){
-       throw new Error ("Dados Inválidos")
+    const certificado = await prisma.certficados.create({ data })
+    if (!certificado) {
+      throw new Error("Dados Inválidos")
 
     }
     return certificado
 
-  }catch(e){
+  } catch (e) {
     if (e instanceof Error && e.message.includes("slug")) {
       return new Error("Slug já cadastrado");
     }
@@ -64,45 +67,45 @@ export const createCertificadoModel = async (data: Prisma.CertficadosCreateInput
 };
 
 export const getCertificadoModel = async (slug: string) => {
- 
+
   try {
 
     const certificado = await findUniqueModel({
 
-      find:"slug",
+      find: "slug",
 
-      value:slug,
+      value: slug,
 
-      data:{
-        id:true,
+      data: {
+        id: true,
 
-        titulo:true,
+        titulo: true,
 
-        descricao:true,
+        descricao: true,
 
-        slug:true,
+        slug: true,
 
-        horas:true,
+        horas: true,
 
-        createdAt:true,
+        createdAt: true,
 
-        updatedAt:true,
+        updatedAt: true,
       },
 
-      model:prisma.certficados
+      model: prisma.certficados
 
     })
 
-    if (certificado instanceof Error){
-      
-       throw new Error(certificado.message)
+    if (certificado instanceof Error) {
+
+      throw new Error(certificado.message)
 
     }
 
     return certificado
 
-  } 
-  catch (e){
+  }
+  catch (e) {
     return e;
 
   }
@@ -110,49 +113,49 @@ export const getCertificadoModel = async (slug: string) => {
 
 
 
-export const updateCertificadoModel = async (id:string,validateData:Prisma.CertficadosUpdateInput) =>{
-   try {
-     const updated = await updateModel({
-       find:"id",
+export const updateCertificadoModel = async (id: string, validateData: Prisma.CertficadosUpdateInput) => {
+  try {
+    const updated = await updateModel({
+      find: "id",
 
-       value:id,
+      value: id,
 
-      data:validateData,
+      data: validateData,
 
-      model:prisma.certficados,
+      model: prisma.certficados,
     })
-    if(updated instanceof Error){
-       throw new Error (updated.message)
+    if (updated instanceof Error) {
+      throw new Error(updated.message)
 
     }
     return updated
 
-   }catch(e){
-      return e
-    
-   }
+  } catch (e) {
+    return e
+
+  }
 }
 
 
 
-export const deleteCertificadoModel = async (id:string) =>{
+export const deleteCertificadoModel = async (id: string) => {
   try {
     const updated = await deleteModel({
-      find:"id",
+      find: "id",
 
-      value:id,
+      value: id,
 
-      model:prisma.certficados,
+      model: prisma.certficados,
 
-   })
-   if(updated instanceof Error){
-      throw new Error (updated.message)
+    })
+    if (updated instanceof Error) {
+      throw new Error(updated.message)
 
-   }
-   return updated
-   
-  }catch(e){
-   return e
-   
+    }
+    return updated
+
+  } catch (e) {
+    return e
+
   }
 }

@@ -26,6 +26,7 @@ const getProjetosModel = () => __awaiter(void 0, void 0, void 0, function* () {
                 descricao: true,
                 skills: true,
                 skillsPath: true,
+                order: true,
                 slug: true,
                 liveUrl: true,
                 githubUrl: true,
@@ -34,7 +35,9 @@ const getProjetosModel = () => __awaiter(void 0, void 0, void 0, function* () {
                 createdAt: true,
                 updatedAt: true,
             },
-            model: prisma_1.default.projetos
+            model: prisma_1.default.projetos,
+            order: "order",
+            orderValue: 'asc'
         });
         if (projetos instanceof Error) {
             throw new Error(projetos.message);
@@ -80,7 +83,7 @@ const getProjetoModel = (slug) => __awaiter(void 0, void 0, void 0, function* ()
                 createdAt: true,
                 updatedAt: true,
             },
-            model: prisma_1.default.projetos
+            model: prisma_1.default.projetos,
         });
         if (projeto instanceof Error) {
             throw new Error(projeto.message);

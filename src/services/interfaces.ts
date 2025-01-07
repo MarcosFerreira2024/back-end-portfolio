@@ -1,81 +1,85 @@
-import {  PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client"
 
 
 export interface CrudUniqueParams<T> extends CrudManyParams<T> {
-    value:string
-    
-    find:"email"|"id"|"slug",
+    value: string
+
+    find: "email" | "id" | "slug",
 
 }
 
 
-export interface CrudManyParams<T>  {
-    data:T,
+export interface CrudManyParams<T> {
+    data: T,
 
-    model:any
+    model: any
+
+    order?: string,
+
+    orderValue?: "desc" | "asc",
 
 }
 
 
 export interface Delete {
-    find:"email"|"id"|"slug",
+    find: "email" | "id" | "slug",
 
-    value:string,
+    value: string,
 
-    model:any
+    model: any
 
 }
 
 
 
 export interface GetAll {
-    model : () => Promise<any>,
+    model: () => Promise<any>,
 
 
 
 }
- 
+
 
 export interface CreateOne {
-    model:(data:any)=>Promise<any>,
+    model: (data: any) => Promise<any>,
 
-    data:any,
+    data: any,
 
-    
+
 
 
 }
 
-export interface Model{
+export interface Model {
     data: any
-    model:keyof PrismaClient
+    model: keyof PrismaClient
 
 }
 
 
 
 export interface GetOne {
-  data:string,
+    data: string,
 
-  model:(data:any)=> Promise<any>; 
+    model: (data: any) => Promise<any>;
 
 
 }
 
 export interface DeleteOne {
-    id:string,
+    id: string,
 
-    model:(data:any)=> Promise<any>
+    model: (data: any) => Promise<any>
 
 }
 
 export interface UpdateOne {
-    id:string,
+    id: string,
 
-    data:any,
+    data: any,
 
 
-    model:(id:string,data: any)=> Promise<any>
+    model: (id: string, data: any) => Promise<any>
 
 
 }

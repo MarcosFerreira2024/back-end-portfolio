@@ -18,6 +18,7 @@ model User {
   name      String
   email     String   @unique
   password  String
+  order     Int?     @default(3)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      String   @default("USER")
@@ -33,6 +34,7 @@ model Projetos {
   skills     String[]
   skillsPath String[]
   photo      String
+  order      Int?     @default(3)
   photoDark  String?
   liveUrl    String
   githubUrl  String
@@ -47,6 +49,7 @@ model Certficados {
   titulo    String
   descricao String
   horas     String
+  order     String?
   slug      String   @unique
   url       String
   createdAt DateTime @default(now())

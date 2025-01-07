@@ -25,12 +25,15 @@ const getCertificadosModel = () => __awaiter(void 0, void 0, void 0, function* (
                 titulo: true,
                 descricao: true,
                 horas: true,
+                order: true,
                 slug: true,
                 url: true,
                 createdAt: true,
                 updatedAt: true,
             },
-            model: prisma_1.default.certficados
+            model: prisma_1.default.certficados,
+            order: "horas",
+            orderValue: "asc"
         });
         if (certificados instanceof Error) {
             throw new Error(certificados.message);

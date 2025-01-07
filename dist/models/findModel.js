@@ -28,10 +28,13 @@ const findUniqueModel = (_a) => __awaiter(void 0, [_a], void 0, function* ({ fin
     }
 });
 exports.findUniqueModel = findUniqueModel;
-const findAllModel = (_a) => __awaiter(void 0, [_a], void 0, function* ({ data, model }) {
+const findAllModel = (_a) => __awaiter(void 0, [_a], void 0, function* ({ data, model, order = "createdAt", orderValue = "desc" }) {
     try {
         const search = yield model.findMany({
-            select: data
+            select: data,
+            orderBy: [{
+                    [order]: orderValue
+                }, { "createdAt": "asc" }],
         });
         if (!search) {
             throw new Error("Erro ao buscar");

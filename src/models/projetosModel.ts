@@ -9,7 +9,7 @@ import { deleteModel } from "./deleteModel";
 export const getProjetosModel = async () => {
   try {
     const projetos = await findAllModel({
-      data:{
+      data: {
         id: true,
 
         titulo: true,
@@ -18,7 +18,9 @@ export const getProjetosModel = async () => {
 
         skills: true,
 
-        skillsPath:true,
+        skillsPath: true,
+
+        order: true,
 
         slug: true,
 
@@ -28,7 +30,7 @@ export const getProjetosModel = async () => {
 
         photo: true,
 
-        photoDark:true,
+        photoDark: true,
 
         createdAt: true,
 
@@ -36,33 +38,34 @@ export const getProjetosModel = async () => {
 
       },
 
-      model:prisma.projetos
+      model: prisma.projetos,
+      order: "order",
+      orderValue: 'asc'
 
     })
 
-    if(projetos instanceof Error){
-       throw new Error (projetos.message)
+    if (projetos instanceof Error) {
+      throw new Error(projetos.message)
     }
-      return projetos;
-      
-    
-  } 
-  catch(e)
-  {
+    return projetos;
+
+
+  }
+  catch (e) {
     return e;
   }
 };
 
 export const createProjetoModel = async (data: Prisma.ProjetosCreateInput) => {
   try {
-    const projeto = await prisma.projetos.create({data})
-    if (!projeto){
-       throw new Error ("Dados Inválidos")
+    const projeto = await prisma.projetos.create({ data })
+    if (!projeto) {
+      throw new Error("Dados Inválidos")
 
     }
     return projeto
 
-  }catch(e){
+  } catch (e) {
     if (e instanceof Error && e.message.includes("slug")) {
       return new Error("Slug já cadastrado");
     }
@@ -72,53 +75,53 @@ export const createProjetoModel = async (data: Prisma.ProjetosCreateInput) => {
 };
 
 export const getProjetoModel = async (slug: string) => {
- 
+
   try {
 
     const projeto = await findUniqueModel({
 
-      find:"slug",
+      find: "slug",
 
-      value:slug,
+      value: slug,
 
-      data:{
-        id:true,
+      data: {
+        id: true,
 
-        titulo:true,
+        titulo: true,
 
-        descricao:true,
+        descricao: true,
 
-        slug:true,
+        slug: true,
 
-        skills:true,
+        skills: true,
 
-        githubUrl:true,
+        githubUrl: true,
 
-        liveUrl:true,
+        liveUrl: true,
 
-        photo:true,
+        photo: true,
 
-        skillsPath:true,
+        skillsPath: true,
 
-        createdAt:true,
+        createdAt: true,
 
-        updatedAt:true,
+        updatedAt: true,
       },
 
-      model:prisma.projetos
+      model: prisma.projetos,
 
     })
 
-    if (projeto instanceof Error){
-      
-       throw new Error(projeto.message)
+    if (projeto instanceof Error) {
+
+      throw new Error(projeto.message)
 
     }
 
     return projeto
 
-  } 
-  catch (e){
+  }
+  catch (e) {
     return e;
 
   }
@@ -126,49 +129,49 @@ export const getProjetoModel = async (slug: string) => {
 
 
 
-export const updateProjetoModel = async (id:string,validateData:Prisma.ProjetosUpdateInput) =>{
-   try {
-     const updated = await updateModel({
-       find:"id",
+export const updateProjetoModel = async (id: string, validateData: Prisma.ProjetosUpdateInput) => {
+  try {
+    const updated = await updateModel({
+      find: "id",
 
-       value:id,
+      value: id,
 
-      data:validateData,
+      data: validateData,
 
-      model:prisma.projetos,
+      model: prisma.projetos,
     })
-    if(updated instanceof Error){
-       throw new Error (updated.message)
+    if (updated instanceof Error) {
+      throw new Error(updated.message)
 
     }
     return updated
 
-   }catch(e){
-      return e
-    
-   }
+  } catch (e) {
+    return e
+
+  }
 }
 
 
 
-export const deleteProjetoModel = async (id:string) =>{
+export const deleteProjetoModel = async (id: string) => {
   try {
     const updated = await deleteModel({
-      find:"id",
+      find: "id",
 
-      value:id,
+      value: id,
 
-      model:prisma.projetos,
+      model: prisma.projetos,
 
-   })
-   if(updated instanceof Error){
-      throw new Error (updated.message)
+    })
+    if (updated instanceof Error) {
+      throw new Error(updated.message)
 
-   }
-   return updated
-   
-  }catch(e){
-   return e
-   
+    }
+    return updated
+
+  } catch (e) {
+    return e
+
   }
 }
